@@ -8,6 +8,8 @@ Content/MedievalDungeon
 Content/Megascans
 Content/MSPresets
 Content/StarterContent
+Content/__ExternalActors__
+Content/__ExternalObjects__
 .vscode
 .vs
 *.VC.db
