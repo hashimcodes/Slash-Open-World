@@ -4,6 +4,7 @@
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
 #include "Components/SphereComponent.h"
+#include "Characters/Public/SlashCharacter.h"
 
 AItem::AItem()
 {
@@ -27,18 +28,19 @@ void AItem::BeginPlay()
 
 void AItem::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = FString("IN_") + OtherActor->GetName();
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Green, OtherActorName);
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	if (SlashCharacter)
+	{
+		SlashCharacter->SetOverlapingItem(this);
 	}
-
 }
 
 void AItem::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = FString("OUT_") + OtherActor->GetName();
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	if (SlashCharacter)
+	{
+		SlashCharacter->SetOverlapingItem(nullptr);
 	}
 }
 

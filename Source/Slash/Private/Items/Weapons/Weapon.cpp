@@ -2,6 +2,13 @@
 
 
 #include "Items/Weapons/Weapon.h"
+#include "Characters/Public/SlashCharacter.h"
+
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
 
 void AWeapon::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
+class AItem;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -16,6 +17,7 @@ class SLASH_API ASlashCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	
 	ASlashCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -26,6 +28,7 @@ protected:
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
+	void EKeyPressed();
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -40,4 +43,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Hair)
 		UGroomComponent* Eyebrows;
 
+	UPROPERTY(VisibleInstanceOnly)
+	AItem* OverlapingItem;
+
+public:
+	inline void SetOverlapingItem(AItem* Item) { OverlapingItem = Item; }
 };

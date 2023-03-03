@@ -18,6 +18,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
+
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
@@ -40,8 +43,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float TimeConstant = 5.f;
 	
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* ItemMesh;
+
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
