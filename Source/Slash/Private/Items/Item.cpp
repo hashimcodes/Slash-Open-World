@@ -3,6 +3,7 @@
 
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
+#include "Components/SphereComponent.h"
 
 AItem::AItem()
 {
@@ -10,16 +11,38 @@ AItem::AItem()
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemStaticMesh"));
 	RootComponent = ItemMesh;
+
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	Sphere->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlapBegin);
+	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereOverlapEnd);
 	
 }
 
-float AItem::TransformedSine() 
+void AItem::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FString OtherActorName = FString("IN_") + OtherActor->GetName();
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Green, OtherActorName);
+	}
+
+}
+
+void AItem::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	const FString OtherActorName = FString("OUT_") + OtherActor->GetName();
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+	}
+}
+
+float AItem::TransformedSine()
 {
 	return Amplitude * FMath::Sin(RunningTime * TimeConstant);
 }
