@@ -4,7 +4,7 @@
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
 #include "Components/SphereComponent.h"
-#include "Characters/Public/SlashCharacter.h"
+#include "Characters/SlashCharacter.h"
 
 AItem::AItem()
 {

@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/Public/SlashAnimInstance.h"
-#include "Characters/Public/SlashCharacter.h"
+#include "Characters/SlashAnimInstance.h"
+#include "Characters/SlashCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -25,5 +25,6 @@ void USlashAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(SlashCharacterMovementComponent->Velocity);
 		IsFalling = SlashCharacterMovementComponent->IsFalling();
+		CharacterState = SlashCharacter->GetCharacterState();
 	}
 }

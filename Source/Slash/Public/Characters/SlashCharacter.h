@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CharacterTypes.h"
 #include "SlashCharacter.generated.h"
 
 class USpringArmComponent;
@@ -31,6 +32,8 @@ protected:
 	void EKeyPressed();
 
 private:
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
 	UPROPERTY(VisibleAnywhere)
 		USpringArmComponent* SpringArm;
 
@@ -47,5 +50,6 @@ private:
 	AItem* OverlapingItem;
 
 public:
-	inline void SetOverlapingItem(AItem* Item) { OverlapingItem = Item; }
+	FORCEINLINE void SetOverlapingItem(AItem* Item) { OverlapingItem = Item; }
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };
