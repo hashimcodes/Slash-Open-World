@@ -8,6 +8,7 @@
 #include "GroomComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
+#include "Animation/AnimMontage.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -85,6 +86,49 @@ void ASlashCharacter::EKeyPressed()
 	}
 }
 
+void ASlashCharacter::Attack()
+{
+	if (CanAttack())
+	{
+		PlayAttackmontage();
+		ActionState = EActionState::EAS_Attacking;
+	}
+	
+}
+
+void ASlashCharacter::PlayAttackmontage()
+{
+	UAnimInstance* AnimInstence = GetMesh()->GetAnimInstance();
+	if (AnimInstence && AttackMontage)
+	{
+		AnimInstence->Montage_Play(AttackMontage);
+		const int32 Selection = FMath::RandRange(0, 1);
+		FName SelectionName = "";
+		switch (Selection)
+		{
+		case 0:
+			SelectionName = FName("Attack1");
+			break;
+		case 1:
+			SelectionName = FName("Attack2");
+			break;
+		default:
+			break;
+		}
+		AnimInstence->Montage_JumpToSection(SelectionName, AttackMontage);
+	}
+}
+
+void ASlashCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+bool ASlashCharacter::CanAttack()
+{
+	return CharacterState == ECharacterState::ECS_EquippedOneHandedWeapon && ActionState == EActionState::EAS_Unoccupied;
+}
+
 void ASlashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -102,5 +146,6 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ASlashCharacter::EKeyPressed);
+	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
