@@ -12,6 +12,7 @@ class UCameraComponent;
 class UGroomComponent;
 class AItem;
 class UAnimMontage;
+class AWeapon;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -42,6 +43,19 @@ protected:
 	void AttackEnd();
 	bool CanAttack();
 
+	void PlayEquipMontage(FName SectionName);
+	bool CanDisarmWeapon();
+	bool CanArmWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 	EActionState ActionState = EActionState::EAS_Unoccupied;
@@ -61,9 +75,15 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlapingItem;
 
+	UPROPERTY(VisibleAnywhere)
+	AWeapon* EquippedWeapon;
+
 	//Animation Montages
 	UPROPERTY(EditDefaultsOnly)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* WeaponEquipMontage;
 
 public:
 	FORCEINLINE void SetOverlapingItem(AItem* Item) { OverlapingItem = Item; }
