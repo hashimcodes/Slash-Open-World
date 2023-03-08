@@ -37,6 +37,8 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
 private:
 	UFUNCTION(BlueprintPure)
 	float TransformedSine();
@@ -51,8 +53,5 @@ private:
 	UPROPERTY(EditAnywhere)
 	float TimeConstant = 5.f;
 	
-
-
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere;
+	
 };
