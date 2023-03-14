@@ -24,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 	//Montage Functions
-	void PlayHitReactmontage(const FName& SectionName);
+	void PlayHitReactMontage(const FName& SectionName);
 
 private:
 

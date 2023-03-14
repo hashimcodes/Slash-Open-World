@@ -24,7 +24,7 @@ void AEnemy::BeginPlay()
 	
 }
 
-void AEnemy::PlayHitReactmontage(const FName& SectionName)
+void AEnemy::PlayHitReactMontage(const FName& SectionName)
 {
 	UAnimInstance* AnimInstence = GetMesh()->GetAnimInstance();
 	if (AnimInstence && HitReactMontage)
@@ -49,6 +49,34 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	DRAW_SPHERE(ImpactPoint);
-	PlayHitReactmontage(FName("Left"));
+	const FVector Forward = GetActorForwardVector();
+	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
+	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
+	const double CosTheta = FVector::DotProduct(Forward, ToHit);
+	
+	double Theta = FMath::Acos(CosTheta);
+	Theta = FMath::RadiansToDegrees(Theta);
+
+	const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	if (CrossProduct.Z < 0)
+	{
+		Theta *= -1.f;
+	}
+
+	FName Section("Back");
+	if (Theta >= -45.f && Theta < 45.f)
+	{
+		Section = FName("Front");
+	}
+	else if (Theta >= -135.f && Theta < -45.f)
+	{
+		Section = FName("Left");
+	}
+	else if (Theta >= 45.f && Theta < 135.f)
+	{
+		Section = FName("Right");
+	}
+
+	PlayHitReactMontage(Section);
 }
 
