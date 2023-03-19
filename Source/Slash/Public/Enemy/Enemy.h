@@ -27,10 +27,17 @@ protected:
 	void PlayHitReactMontage(const FName& SectionName);
 
 private:
+	void DirectionalHit(const FVector& ImpactPoint);
 
 	//Animation Montages
 	UPROPERTY(EditDefaultsOnly)
 	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* HitParticles;
 
 public:	
 
