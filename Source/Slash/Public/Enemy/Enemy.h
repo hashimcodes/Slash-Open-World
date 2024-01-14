@@ -8,6 +8,8 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class UAttributesComponent;
+class UHealthBarComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter, public IHitInterface
@@ -27,7 +29,11 @@ protected:
 	void PlayHitReactMontage(const FName& SectionName);
 
 private:
-	void DirectionalHit(const FVector& ImpactPoint);
+	UPROPERTY(VisibleAnywhere)
+	UAttributesComponent* Attributes;
+
+	UPROPERTY(VisibleAnywhere)
+	UHealthBarComponent* HealthBarComponent;
 
 	//Animation Montages
 	UPROPERTY(EditDefaultsOnly)
@@ -39,6 +45,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* HitParticles;
 
-public:	
+	void DirectionalHit(const FVector& ImpactPoint);
 
 };

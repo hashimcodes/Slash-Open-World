@@ -6,6 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Slash/DebugMacros.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AttributesComponent.h"
+#include "HUD/HealthBarComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -17,11 +19,19 @@ AEnemy::AEnemy()
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
+	Attributes = CreateDefaultSubobject<UAttributesComponent>(TEXT("Attributes"));
+	HealthBarComponent = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
+	HealthBarComponent->SetupAttachment(GetRootComponent());
 }
 
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HealthBarComponent)
+	{
+		HealthBarComponent->SetHealthBarPercent(0.5f);
+	}
 	
 }
 
