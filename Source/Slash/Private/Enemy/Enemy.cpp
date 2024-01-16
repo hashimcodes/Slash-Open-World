@@ -28,9 +28,9 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Attributes && HealthBarComponent)
+	if (HealthBarComponent)
 	{
-		HealthBarComponent->SetHealthBarPercent(Attributes->GetHealthPrecent());
+		HealthBarComponent->SetVisibility(false);
 	}
 }
 
@@ -44,10 +44,57 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName)
 	}
 }
 
+void AEnemy::Die()
+{
+	UAnimInstance* AnimInstence = GetMesh()->GetAnimInstance();
+	if (AnimInstence && DeathMontage)
+	{
+		AnimInstence->Montage_Play(DeathMontage);
+		const int32 Selection = FMath::RandRange(0, 2);
+		FName SelectionName = "";
+		switch (Selection)
+		{
+			case 0:
+				SelectionName = FName("Death1");
+				DeathPose = EDeathPose::EDP_Death1;
+				break;
+			case 1:
+				SelectionName = FName("Death2");
+				DeathPose = EDeathPose::EDP_Death2;
+				break;
+			case 2:
+				SelectionName = FName("Death3");
+				DeathPose = EDeathPose::EDP_Death3;
+				break;
+			default:
+				break;
+		}
+		AnimInstence->Montage_JumpToSection(SelectionName, DeathMontage);
+	}
+	if (HealthBarComponent)
+	{
+		HealthBarComponent->SetVisibility(false);
+	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(5.f);
+}
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CombatTarget)
+	{
+		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Length();
+		if (DistanceToTarget > CombatRadius)
+		{
+			CombatTarget = nullptr;
+			if (HealthBarComponent)
+			{
+				HealthBarComponent->SetVisibility(false);
+			}
+		}
+	}
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -59,7 +106,19 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	//DRAW_SPHERE(ImpactPoint);
-	DirectionalHit(ImpactPoint);
+	if (HealthBarComponent)
+	{
+		HealthBarComponent->SetVisibility(true);
+	}
+	if (Attributes && Attributes->IsAlive())
+	{
+		DirectionalHit(ImpactPoint);
+	}
+	else
+	{
+		Die();
+	}
+
 	if (HitSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
@@ -73,12 +132,12 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-
 	if (Attributes && HealthBarComponent)
 	{
 		Attributes->GetDamaged(DamageAmount);
 		HealthBarComponent->SetHealthBarPercent(Attributes->GetHealthPrecent());
 	}
+	CombatTarget = EventInstigator->GetPawn();
 	return DamageAmount;
 }
 

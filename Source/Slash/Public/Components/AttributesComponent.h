@@ -31,4 +31,5 @@ private:
 public:
 	void GetDamaged(float Damage);
 	float GetHealthPrecent();
+	bool IsAlive();
 };
