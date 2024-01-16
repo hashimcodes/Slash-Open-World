@@ -33,8 +33,10 @@ void AWeapon::BeginPlay()
 }
 
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, APawn* NewInstigator, AActor* NewOwner)
 {
+	SetInstigator(NewInstigator);
+	SetOwner(NewOwner);
 	AttachMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
 	
@@ -107,12 +109,14 @@ void AWeapon::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 		BoxHit,
 		true
 	);
+
 	if (BoxHit.GetActor())
 	{
 		IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor());
 		if (HitInterface)
 		{
 			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
+			UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage, GetInstigator()->GetController(), GetOwner(), UDamageType::StaticClass());
 		}
 		IgnoreActors.AddUnique(BoxHit.GetActor());
 		CreateField(BoxHit.ImpactPoint);

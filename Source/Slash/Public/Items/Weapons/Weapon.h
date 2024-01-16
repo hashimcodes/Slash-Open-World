@@ -20,7 +20,7 @@ public:
 	AWeapon();
 
 	UFUNCTION()
-	void Equip(USceneComponent* InParent, FName InSocketName);
+	void Equip(USceneComponent* InParent, FName InSocketName, APawn* NewInstigator, AActor* NewOwner);
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
@@ -41,6 +41,9 @@ protected:
 	USoundBase* EquipSound;
 
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	float Damage = 25.f;
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* WeaponBox;

@@ -28,11 +28,10 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HealthBarComponent)
+	if (Attributes && HealthBarComponent)
 	{
-		HealthBarComponent->SetHealthBarPercent(0.5f);
+		HealthBarComponent->SetHealthBarPercent(Attributes->GetHealthPrecent());
 	}
-	
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
@@ -70,6 +69,17 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticles, ImpactPoint);
 	}
 
+}
+
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+
+	if (Attributes && HealthBarComponent)
+	{
+		Attributes->GetDamaged(DamageAmount);
+		HealthBarComponent->SetHealthBarPercent(Attributes->GetHealthPrecent());
+	}
+	return DamageAmount;
 }
 
 void AEnemy::DirectionalHit(const FVector& ImpactPoint)
